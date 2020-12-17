@@ -3,16 +3,16 @@ pragma solidity >=0.6.0 <0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract MyToken is ERC20 {
+contract UbrisToken is ERC20 {
 
-    constructor() public ERC20("Ubris", "UBS2") {
-        _mint(msg.sender, 1000000000000000000000000);
-        _mint(address(this), 1000000000000000000000000);
+    constructor(uint256 initialSupply) public ERC20("UbrisToken", "UBS") {
+        _mint(msg.sender, initialSupply/2);
+        _mint(address(this), initialSupply/2);
     }
 
+    //free faucet
     function faucet() public {
-        require(balanceOf(msg.sender) < 5, "You have to much tokens to use this faucet");
+        require(balanceOf(msg.sender) < 10, "You have to much tokens to use this faucet");
         this.transfer(msg.sender, 1);
     }
-
 }
