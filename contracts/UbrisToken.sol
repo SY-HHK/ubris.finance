@@ -46,9 +46,9 @@ contract UbrisToken is ERC20 {
     function stackOut() public {
         Stacker memory stacker = stackedAmount[msg.sender];
         for (uint i = 0; i < stacker.stack.length; i+=1) {
-            transfer(msg.sender, stacker.stack[i].amount);
+            this.transfer(msg.sender, stacker.stack[i].amount);
         }
-        delete stacker.stack;
+        delete stackedAmount[msg.sender].stack;
     }
 
     //calcul harvest
@@ -57,10 +57,10 @@ contract UbrisToken is ERC20 {
         Stacker memory stacker = stackedAmount[msg.sender];
         for (uint i = 0; i < stacker.stack.length; i+=1) {
             if (stacker.lastHarvestDate > stacker.stack[i].date) {
-                harvestable += (stacker.stack[i].amount / 100) * (stacker.lastHarvestDate / 3600 minutes);
+                harvestable += (stacker.stack[i].amount / 100) * ((block.timestamp - stacker.lastHarvestDate) / 10 seconds);
             }
             else {
-                harvestable += (stacker.stack[i].amount / 100) * (stacker.stack[i].date / 3600 minutes);
+                harvestable += (stacker.stack[i].amount / 100) * ((block.timestamp - stacker.stack[i].date) / 10 seconds);
             }
         }
         return harvestable;
@@ -68,7 +68,7 @@ contract UbrisToken is ERC20 {
 
     //harvest
     function harvest() public {
-        transferFrom(address(this), msg.sender, getHarvestable());
+        this.transfer(msg.sender, getHarvestable());
         stackedAmount[msg.sender].lastHarvestDate = block.timestamp;
     }
 }
